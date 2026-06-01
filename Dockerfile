@@ -20,7 +20,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD sources.list /etc/apt/
 
-# 基础系统工具 + PHP 8.3 + Composer + Node.js (仅 npm)
+# 基础系统工具 + PHP 8.4 + Composer + Node.js (仅 npm)
 RUN apt-get update && apt-get upgrade -y \
     && mkdir -p /etc/apt/keyrings \
     && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python3 dnsutils nano \
@@ -29,16 +29,16 @@ RUN apt-get update && apt-get upgrade -y \
     && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get install -y \
-        php8.3-cli \
-        php8.3-dev \
-        php8.3-fpm \
-        php8.3-curl \
-        php8.3-mysql \
-        php8.3-mbstring \
-        php8.3-xml \
-        php8.3-zip \
-        php8.3-bcmath \
-        php8.3-intl \
+        php8.4-cli \
+        php8.4-dev \
+        php8.4-fpm \
+        php8.4-curl \
+        php8.4-mysql \
+        php8.4-mbstring \
+        php8.4-xml \
+        php8.4-zip \
+        php8.4-bcmath \
+        php8.4-intl \
     # 安装 Composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/bin --filename=composer \
@@ -57,10 +57,10 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.4
 
-# 确保 /usr/bin/php 指向 php8.3
-RUN update-alternatives --set php /usr/bin/php8.3
+# 确保 /usr/bin/php 指向 php8.4
+RUN update-alternatives --set php /usr/bin/php8.4
 
 RUN groupadd --force -g $WWWGROUP sail \
     && useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
@@ -68,7 +68,7 @@ RUN git config --global --add safe.directory /var/www/html
 
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
+COPY php.ini /etc/php/8.4/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
 # ✅ 复制项目代码
