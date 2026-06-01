@@ -71,7 +71,16 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.1/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
+# ✅ 复制项目代码
 COPY . /var/www/html
+
+# ✅ 使用 Composer 国内镜像加速（可选）
+ENV COMPOSER_MIRROR=https://mirrors.aliyun.com/composer/
+
+# ✅ 安装生产依赖（生产环境无需 --dev）
+RUN composer install --no-dev --optimize-autoloader --no-interaction --working-dir=/var/www/html
+
+# ✅ 修正文件所有者为 sail
 RUN chown -R sail:sail /var/www/html
 
 EXPOSE 80/tcp
